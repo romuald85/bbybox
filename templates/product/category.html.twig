@@ -1,13 +1,20 @@
-{% extends 'base.html.twig' %}
+{% extends "base.html.twig" %}
 
-{% block title %}Nos produits
+{% block title %}
+	{{category.name}}
 {% endblock %}
 
 {% block body %}
-	<h1>Nos produits phares</h1>
+	<ol class="breadcrumb">
+		<li class="breadcrumb-item">
+			<a href="{{path('homepage')}}">Accueil</a>
+		</li>
+		<li class="breadcrumb-item active">{{category.name}}</li>
+	</ol>
+	<h1>{{category.name}}</h1>
 	<div class="row">
-		{% for p in products %}
-			<div class="col">
+		{% for p in category.products %}
+			<div class="col-3">
 				<div class="card">
 					<img src="{{p.mainPicture}}" class="img-fluid" alt="image du produit">
 					<div class="card-body">
