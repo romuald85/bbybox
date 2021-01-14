@@ -6,6 +6,7 @@ use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=CategoryRepository::class)
@@ -21,6 +22,8 @@ class Category
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="Le nom de la catégorie doit être obligatoire")
+     * @Assert\Length(min="3", minMessage="Le nom de la catégorie doit avoir au moins 3 caractères")
      */
     private $name;
 
@@ -68,15 +71,27 @@ class Category
         return $this;
     }
 
+    public function getCategory(): ?self
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?self $category): self
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
     /**
-     * @return Collection|Product[]
+     * @return Collection|self[]
      */
     public function getProducts(): Collection
     {
         return $this->products;
     }
 
-    public function addProduct(Product $product): self
+    public function addProduct(self $product): self
     {
         if (!$this->products->contains($product)) {
             $this->products[] = $product;
@@ -86,7 +101,7 @@ class Category
         return $this;
     }
 
-    public function removeProduct(Product $product): self
+    public function removeProduct(self $product): self
     {
         if ($this->products->removeElement($product)) {
             // set the owning side to null (unless already changed)
