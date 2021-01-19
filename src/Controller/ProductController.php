@@ -11,7 +11,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ProductController extends AbstractController
@@ -67,7 +66,6 @@ class ProductController extends AbstractController
 
     /** 
      * @Route("admin/product/{id}/edit", name="product_edit")
-     * @IsGranted("ROLE_ADMIN", message="Vous n'avez pas accès à cette ressource!")
      */
     public function edit($id, ProductRepository $productRepository, Request $request, EntityManagerInterface $em)
     {
@@ -98,7 +96,6 @@ class ProductController extends AbstractController
 
     /** 
      * @Route("/admin/product/create", name="product_create")
-     * @IsGranted("ROLE_ADMIN", message="Vous n'avez pas accès à cette ressource!")
      */
     public function create(Request $request, SluggerInterface $slugger, EntityManagerInterface $em)
     {
