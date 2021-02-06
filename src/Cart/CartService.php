@@ -17,9 +17,20 @@ class CartService
         $this->productRepository = $productRepository;
     }
 
+    public function getBasket(): array
+    {
+        return $this->session->get('basket', []);
+    }
+
+    public function saveBasket(array $basket)
+    {
+        return $this->session->set('basket', $basket);
+    }
+
+
     public function add(int $id)
     {
-        $basket = $this->session->get('basket', []);
+        $basket = $this->getBasket();
 
         if (array_key_exists($id, $basket)) {
             $basket[$id]++;
@@ -27,41 +38,41 @@ class CartService
             $basket[$id] = 1;
         }
 
-        $this->session->set('basket', $basket);
+        $this->saveBasket($basket);
     }
 
     public function remove(int $id)
     {
-        $cart = $this->session->get('basket', []);
+        $basket = $this->getBasket();
 
-        unset($cart[$id]);
+        unset($basket[$id]);
 
-        $this->session->set('basket', $cart);
+        $this->saveBasket($basket);
     }
 
     public function decrement(int $id)
     {
-        $cart = $this->session->get('basket', []);
+        $basket = $this->getBasket();
 
-        if (!array_key_exists($id, $cart)) {
+        if (!array_key_exists($id, $basket)) {
             return;
         }
 
-        if ($cart[$id] === 1) {
+        if ($basket[$id] === 1) {
             $this->remove($id);
             return;
         }
 
-        $cart[$id]--;
+        $basket[$id]--;
 
-        $this->session->set('basket', $cart);
+        $this->saveBasket($basket);
     }
 
     public function getTotal(): int
     {
         $total = 0;
 
-        foreach ($this->session->get('basket') as $id => $qty) {
+        foreach ($this->session->get('basket', []) as $id => $qty) {
             $product = $this->productRepository->find($id);
 
             if (!$product) { // Si jamais l'identifiant du produit n'existe pas pour qqe raison il renverra null donc on évite ça avec le 'continue'
@@ -78,7 +89,7 @@ class CartService
     {
         $detailedBasket = [];
 
-        foreach ($this->session->get('basket') as $id => $qty) {
+        foreach ($this->session->get('basket', []) as $id => $qty) {
             $product = $this->productRepository->find($id);
 
             if (!$product) {
